@@ -1,0 +1,42 @@
+REPORT zprg_new_syntax_cond.
+TYPES : BEGIN OF lty_data,
+          vbeln TYPE vbeln_va,
+          netwr TYPE netwr_ak,
+        END OF lty_data.
+
+DATA : lt_data  TYPE TABLE OF lty_data,
+       lwa_data TYPE lty_data,
+       lv_vbeln TYPE vbeln_va,
+       lv_text  TYPE char20.
+
+SELECT-OPTIONS : s_vbeln FOR lv_vbeln.
+
+SELECT vbeln netwr
+FROM vbak
+INTO TABLE lt_data
+WHERE vbeln IN s_vbeln.
+
+
+************Old Syntax
+LOOP AT lt_data INTO lwa_data.
+  IF lwa_data-netwr GE 0 AND lwa_data-netwr LE 500.
+    lv_text = TEXT-000. "'Low Priority'.
+  ELSEIF lwa_data-netwr GE 500 AND lwa_data-netwr LE 1000.
+    lv_text = TEXT-001. "'Medium Priority'.
+  ELSE.
+    lv_text = TEXT-002. "'High Priority'.
+  ENDIF.
+  WRITE : / lwa_data-netwr , lv_text.
+ENDLOOP.
+
+
+
+
+*****************New Syntax************
+LOOP AT lt_data INTO lwa_data.
+  lv_text = COND char20( WHEN lwa_data-netwr GE 0 AND lwa_data-netwr LE 500 THEN TEXT-000
+                         WHEN lwa_data-netwr GE 500 AND lwa_data-netwr LE 1000 THEN TEXT-001
+                         ELSE TEXT-002
+                      ).
+  WRITE : / lwa_data-netwr , lv_text.
+ENDLOOP.
