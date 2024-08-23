@@ -1,0 +1,32 @@
+ALPHA IN OUT  Replacement Of Function Module.
+
+DATA : lv_input1(10) TYPE C,
+       lv_input2(10) TYPE C.
+
+lv_input1 = '12055'.
+lv_input2 = '00000012345'.
+
+*******Old Syntax*****
+
+CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+  EXPORTING
+    INPUT         = lv_input1
+ IMPORTING
+   OUTPUT        = lv_input1.
+
+CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+  EXPORTING
+    INPUT         = lv_input2
+ IMPORTING
+   OUTPUT        = lv_input2
+          .
+
+
+WRITE : /  lv_input1 ,/ lv_input2.
+
+***************New Syntax********************
+
+lv_input1 = | { lv_input1 ALPHA = IN } |.
+lv_input2 = | { lv_input2 ALPHA = OUT } |.
+
+WRITE : /  lv_input1 ,/ lv_input2.
