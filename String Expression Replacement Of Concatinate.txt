@@ -36,7 +36,7 @@ SELECT vbeln
 ************Old Syntax**********************
 LOOP AT lt_data INTO lwa_data.
   lv_temp = lwa_data-netwr.
-  CONDENSE   lv_temp.
+  CONDENSE   lv_temp.    "Removing extra space"
   CONCATENATE lwa_data-vbeln lv_temp INTO lv_output SEPARATED BY '#'.
   WRITE : / lv_output.
 ENDLOOP.
