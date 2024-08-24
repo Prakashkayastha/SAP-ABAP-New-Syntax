@@ -1,0 +1,55 @@
+TYPES : BEGIN OF lty_data,
+          vbeln TYPE vbeln_va,
+          erdat TYPE erdat,
+          erzet TYPE erzet,
+          ernam TYPE ernam,
+          vbtyp TYPE vbtypl,
+        END OF lty_data.
+
+
+TYPES : BEGIN OF lty_data1,
+          vbeln TYPE vbeln_va,
+          uname TYPE ernam,
+          vbtyp TYPE vbtypl,
+        END OF lty_data1.
+
+
+DATA : lt_data  TYPE TABLE OF lty_data,
+       lwa_data TYPE lty_data,
+       lt_data1 TYPE TABLE OF lty_data1,
+       lwa_data1 TYPE lty_data1.
+
+DATA : lv_vbeln TYPE vbeln_va.
+
+SELECT-OPTIONS : s_vbeln FOR lv_vbeln.
+
+SELECT vbeln
+       erdat
+       erzet
+       ernam
+       vbtyp
+  FROM vbak
+  INTO TABLE lt_data
+  WHERE vbeln IN s_vbeln.
+  
+  
+************************Old Syntax*******************
+LOOP AT lt_data INTO lwa_data.
+  "MOVE-CORRESPONDING lwa_data to lwa_data1.
+lwa_data1-vbeln = lwa_data-vbeln.
+lwa_data1-uname = lwa_data-ernam.
+lwa_data-vbtyp = lwa_data-vbtyp.
+APPEND lwa_data1 TO lt_data1.
+CLEAR : lwa_data1.
+ENDLOOP.
+
+
+*******************New Syntax*****************
+lt_data1 = CORRESPONDING #( lt_data  ).
+lt_data1 = CORRESPONDING #( lt_data MAPPING uname = ernam ).
+lt_data1 = CORRESPONDING #( lt_data MAPPING uname = ernam EXCEPT vbtyp ).
+
+LOOP AT lt_data1 INTO lwa_data1.
+  WRITE : / lwa_data1-vbeln,lwa_data1-uname,lwa_data1-vbtyp.
+
+ENDLOOP.
