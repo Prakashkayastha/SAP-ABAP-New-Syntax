@@ -1,0 +1,13 @@
+TYPES : BEGIN OF lty_data,
+        eid TYPE I,
+        ename(10) TYPE C,
+        END OF lty_data.
+
+DATA : lt_data TYPE TABLE OF lty_data.
+
+lt_data = VALUE #( ( eid = 1 ename = 'Prakash' ) ( eid = 2 ename = 'Akash' ) ( eid = 3 ename = 'Bikash' )
+                          ).
+lt_data = VALUE #( BASE lt_data ( eid = 4 ename = 'Hitesh' ) ).
+LOOP AT lt_data INTO DATA(lwa_data).
+   WRITE : / lwa_data-eid,lwa_data-ename.
+ENDLOOP.
