@@ -1,0 +1,48 @@
+1------------->
+DATA : lv_output(55) TYPE C,
+       lv_var1(10) TYPE C,
+       lv_var2(10) TYPE C.
+lv_var1 = 'Prakash'.
+lv_var2 = '23'.
+
+*************Old Syntax*********
+CONCATENATE 'Welcome' lv_var1 'Your' 'age ' 'is' lv_var2 'years' 'old' INTO lv_output SEPARATED BY SPACE.
+
+********New Syntax************
+lv_output = |Welcome { lv_var1 } Your age is { lv_var2 } years old |.
+WRITE : / lv_output.
+
+
+
+2------------------>
+TYPES : BEGIN OF lty_data,
+          vbeln TYPE vbeln_va,
+          netwr TYPE netwr_ak,
+        END OF lty_data.
+
+DATA : lt_data       TYPE TABLE OF lty_data,
+       lwa_data      TYPE lty_data,
+       lv_vbeln      TYPE vbeln_va,
+       "lv_outpuT(30) TYPE c,
+       lv_temp(20)   TYPE c.
+
+SELECT-OPTIONS : s_vbeln FOR lv_vbeln.
+
+SELECT vbeln
+       netwr
+  FROM vbak
+  INTO TABLE lt_data
+  WHERE vbeln IN s_vbeln.
+************Old Syntax**********************
+LOOP AT lt_data INTO lwa_data.
+  lv_temp = lwa_data-netwr.
+  CONDENSE   lv_temp.
+  CONCATENATE lwa_data-vbeln lv_temp INTO lv_output SEPARATED BY '#'.
+  WRITE : / lv_output.
+ENDLOOP.
+
+*****************New Syntax******************************
+LOOP AT lt_data INTO lwa_data.
+  DATA(lv_output) = | { lwa_data-vbeln } OKAY { lwa_data-netwr }|.
+  WRITE : / lv_output.
+ENDLOOP.
