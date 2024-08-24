@@ -29,6 +29,10 @@ TYPES : ltty_data TYPE TABLE OF lty_data WITH EMPTY KEY.
 
 DATA(lt_data) = VALUE ltty_data( ( eid = 1 ename = 'Prakash' ) ( eid = 2 ename = 'Akash' ) ( eid = 3 ename = 'Bikash' )
                           ).
+OR
+DATA : lt_data TYPE TABLE OF lty_data.
+lt_data = VALUE #( ( eid = 1 ename = 'Prakash' ) ( eid = 2 ename = 'Akash' ) ( eid = 3 ename = 'Bikash' )
+                          ).
 
 LOOP AT lt_data INTO DATA(lwa_data).
   WRITE : / lwa_data-eid , lwa_data-ename.
