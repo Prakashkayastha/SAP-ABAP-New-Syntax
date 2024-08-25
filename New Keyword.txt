@@ -1,0 +1,33 @@
+DATA : lo_object TYPE REF TO zclass_sum,
+       lv_output TYPE NUMC3.
+
+PARAMETERS : p_input1 TYPE numc2,
+             p_input2 TYPE numc2.
+
+**********Old Syntax********
+CREATE OBJECT lo_object.
+
+
+*************New Syntax*************
+lo_object = NEW ZCLASS_SUM( ).
+
+CALL METHOD lo_object->sum
+  EXPORTING
+    pinput1 = p_input1
+    pinput2 = p_input2
+  IMPORTING
+    poutput = lv_output
+    .
+
+WRITE : lv_output.
+
+
+
+**********Old Syntax For Mandatory parameter********
+*CREATE OBJECT lo_object
+*EXPORTING
+*  pvalue = 'X'
+  
+  
+**********New Syntax For Mandatory parameter********
+*lo_object = NEW ZCLASS_SUM( pvalue = 'X' ).
