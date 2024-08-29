@@ -1,0 +1,25 @@
+REPORT ZPK_NEW_SYNTAX.
+
+TYPES : BEGIN OF lty_data,
+        col1(2) TYPE N,
+        col2(3) TYPE N,
+        END OF lty_data.
+
+DATA : lwa_data TYPE lty_data.
+"DATA(X) = 10.
+
+PARAMETERS : p_input(2) TYPE N.
+
+DO p_input TIMES.
+
+  lwa_data = VALUE #( col1 = SY-INDEX col2 = SY-INDEX + X ).
+  WRITE : / lwa_data-col1 , lwa_data-col2.
+
+ENDDO.
+
+DO p_input TIMES.
+
+  lwa_data = VALUE #( LET X = 10 IN col1 = SY-INDEX col2 = SY-INDEX + X ).
+  WRITE : / lwa_data-col1 , lwa_data-col2.
+
+ENDDO.
