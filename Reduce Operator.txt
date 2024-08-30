@@ -1,0 +1,46 @@
+REPORT ZPK_NEW_SYNTAX.
+
+TYPES : BEGIN OF lty_data,
+        vbeln type vbeln_va,
+        vbtyp TYPE vbtypl,
+        END OF lty_data.
+
+DATA : lt_data TYPE TABLE OF lty_data,
+       "lwa_data TYPE lty_data, ***In case of new syntax (reduce) you dont need to declare the workarea it automatically understand lwa_data is a workarea.**
+       lv_erdat TYPE erdat,
+       lv_count1 TYPE I,
+       lv_count2 TYPE I,
+       lv_count3 TYPE I.
+
+SELECT-OPTIONS : s_erdat FOR lv_erdat.
+
+SELECT vbeln vbtyp
+FROM VBAK
+INTO TABLE lt_data
+WHERE erdat IN s_erdat.
+
+
+********Old Syntax**********
+*LOOP AT lt_data INTO lwa_data.
+*  IF lwa_data-vbtyp = 'A'.
+*    lv_count1 = lv_count1 + 1.
+*  ENDIF.
+*   IF lwa_data-vbtyp = 'B'.
+*    lv_count2 = lv_count2 + 1.
+*  ENDIF.
+*   IF lwa_data-vbtyp = 'C'.
+*    lv_count3 = lv_count3 + 1.
+*  ENDIF.
+*
+*ENDLOOP.
+
+
+***********New Syntax**********
+lv_count1 = REDUCE #( INIT count = 0 FOR lwa_data IN lt_data WHERE ( vbtyp = 'A') NEXT count = count + 1 ).
+WRITE : TEXT-000, lv_count1.
+
+lv_count2 = REDUCE #( INIT count = 0 FOR lwa_data IN lt_data WHERE ( vbtyp = 'B') NEXT count = count + 1 ).
+WRITE : TEXT-001, lv_count2.
+
+lv_count3 = REDUCE #( INIT count = 0 FOR lwa_data IN lt_data WHERE ( vbtyp = 'C' ) NEXT count = count + 1 ).
+WRITE : TEXT-002, lv_count3.
