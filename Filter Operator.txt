@@ -1,0 +1,57 @@
+TYPES : BEGIN OF lty_data,
+          vbeln TYPE vbeln_va,
+          vbtyp TYPE vbtypl,
+        END OF lty_data.
+
+TYPES : BEGIN OF lty_filter,
+          vbtyp TYPE VBTYPL,
+        END OF lty_filter.
+
+"DATA : lt_data TYPE TABLE OF lty_data,
+DATA : lt_data TYPE SORTED TABLE OF lty_data WITH NON-UNIQUE KEY VBTYP,
+       lwa_data TYPE lty_data,
+       lt_temp_data TYPE TABLE OF lty_data,
+       lv_erdat TYPE erdat.
+
+DATA : lt_filter TYPE SORTED TABLE OF lty_filter WITH UNIQUE KEY VBTYP.
+
+SELECT-OPTIONS : s_erdat FOR lv_erdat.
+
+ SELECT vbeln
+        vbtyp
+   FROM vbak
+   INTO TABLE lt_data
+   WHERE erdat in s_erdat.
+
+***********Old Way*********
+*   LOOP AT lt_data INTO lwa_data.
+*     IF lwa_data-vbtyp = 'A'.
+*       APPEND lwa_data TO lt_temp_data.
+*       CLEAR : lwa_data.
+*     ENDIF.
+*   ENDLOOP.
+*
+*   LOOP AT lt_data INTO lwa_data.
+*     WRITE : lwa_data-vbeln , lwa_data-vbtyp.
+*
+*   ENDLOOP.
+
+**********New Way********
+*****Filter with single values********
+*lt_temp_data = FILTER #( lt_data  WHERE vbtyp = CONV VBTYPL( 'A' ) ).
+*lt_temp_data = FILTER #( lt_data EXCEPT WHERE vbtyp = CONV VBTYPL( 'A' ) ).
+*
+*   LOOP AT lt_data INTO lwa_data.
+*     WRITE : / lwa_data-vbeln , lwa_data-vbtyp.
+*
+*   ENDLOOP.
+
+******Filter with filter values********
+lt_filter = VALUE #( ( VBTYP = 'A' ) ( VBTYP = 'C' ) ).
+"lt_temp_data = FILTER #( lt_data IN lt_filter WHERE VBTYP = VBTYP ).
+lt_temp_data = FILTER #( lt_data EXCEPT IN lt_filter WHERE VBTYP = VBTYP ).
+
+   LOOP AT lt_data INTO lwa_data.
+     WRITE : / lwa_data-vbeln , lwa_data-vbtyp.
+
+   ENDLOOP.
